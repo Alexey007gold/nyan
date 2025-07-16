@@ -1,7 +1,7 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
 
 # Crawler
-scrapy >= 2.5.0
+scrapy >= 2.5.0,<2.13
 
 # Annotator
 html2text >= 2020.1.16

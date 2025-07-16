@@ -16,7 +16,7 @@ services:
     volumes:
       - .:/usr/src/app
     depends_on:
-      - mongo
+      - mongodb
     restart: always
     command: bash send_container.sh
 
@@ -25,6 +25,6 @@ services:
     volumes:
       - .:/usr/src/app
     depends_on:
-      - mongo
+      - mongodb
     restart: always
     command: bash crawl.sh
