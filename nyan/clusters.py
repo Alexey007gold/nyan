@@ -1,22 +1,21 @@
+import hashlib
 import json
 import os
-import traceback
 import shutil
-import hashlib
-from pathlib import Path
-from typing import Optional, Dict, List, Any, TypeVar, Sequence
-from typing import Counter as CounterT
+import traceback
 from collections import Counter, defaultdict
 from functools import cached_property
+from pathlib import Path
+from typing import Counter as CounterT
+from typing import Optional, Dict, List, Any, TypeVar, Sequence
 
 from jinja2 import Template
 
 from nyan.client import MessageId
 from nyan.document import Document
 from nyan.mongo import get_clusters_collection
-from nyan.title import choose_title
 from nyan.openai_client import openai_completion
-
+from nyan.title import choose_title
 
 BASE_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 T = TypeVar("T")
@@ -162,7 +161,7 @@ class Cluster:
 
         differences: List[Dict[str, Any]] = []
         try:
-            content = openai_completion(messages=messages, model_name="gpt-4o")
+            content = openai_completion(messages=messages)
             content = content[content.find("{") : content.rfind("}") + 1]
             parsed_content: Dict[str, List[Dict[str, Any]]] = json.loads(content)
             differences = parsed_content["differences"]
