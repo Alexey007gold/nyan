@@ -1,6 +1,8 @@
 import argparse
 from typing import Optional
 
+from tenacity import sleep
+
 from nyan.daemon import Daemon
 
 
@@ -15,6 +17,7 @@ def main(
     renderer_config_path: str,
     mongo_config_path: Optional[str],
     daemon_config_path: str,
+    skip_send: bool,
 ) -> None:
     daemon = Daemon(
         client_config_path=client_config_path,
@@ -24,8 +27,10 @@ def main(
         channels_info_path=channels_info_path,
         renderer_config_path=renderer_config_path,
         daemon_config_path=daemon_config_path,
+        skip_send=skip_send,
     )
     daemon.run(input_path, mongo_config_path, posted_clusters_path)
+    sleep(10)
 
 
 if __name__ == "__main__":
@@ -51,6 +56,9 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--daemon-config-path", type=str, default="configs/daemon_config.json"
+    )
+    parser.add_argument(
+        "--skip_send", type=bool, default=False
     )
     args = parser.parse_args()
     main(**vars(args))

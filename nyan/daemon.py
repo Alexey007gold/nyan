@@ -34,6 +34,7 @@ class Daemon:
         channels_info_path: str,
         renderer_config_path: str,
         daemon_config_path: str,
+        skip_send: bool,
     ) -> None:
         self.client = TelegramClient(client_config_path)
         self.channels = Channels(channels_info_path)
@@ -41,6 +42,7 @@ class Daemon:
         self.clusterer = Clusterer(clusterer_config_path)
         self.renderer = Renderer(renderer_config_path, self.channels)
         self.ranker = Ranker(ranker_config_path)
+        self.skip_send = skip_send
 
         assert os.path.exists(daemon_config_path)
         with open(daemon_config_path) as r:
@@ -101,13 +103,16 @@ class Daemon:
         print()
         for issue, clusters in ranked_clusters.items():
             for cluster in clusters:
-                self.send_cluster(
-                    cluster,
-                    issue,
-                    posted_clusters,
-                    posted_clusters_path,
-                    mongo_config_path,
-                )
+                if not self.skip_send:
+                    self.send_cluster(
+                        cluster,
+                        issue,
+                        posted_clusters,
+                        posted_clusters_path,
+                        mongo_config_path,
+                    )
+                else:
+                    posted_clusters.add(cluster)
 
         print()
         if posted_clusters_path:
@@ -186,10 +191,10 @@ class Daemon:
         if remaining_docs:
             annotated_docs = self.annotator(remaining_docs)
             print("{} docs annotated".format(len(annotated_docs)))
+            all_annotated_docs += annotated_docs
 
         if mongo_config_path and remaining_docs:
             write_annotated_documents_mongo(mongo_config_path, annotated_docs)
-            all_annotated_docs += annotated_docs
 
         final_docs = self.annotator.postprocess(all_annotated_docs)
         print("{} docs before clustering".format(len(final_docs)))

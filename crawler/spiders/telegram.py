@@ -7,7 +7,10 @@ import html2text
 
 
 def get_current_ts():
-    return int(datetime.now().replace(tzinfo=timezone.utc).timestamp())
+    return int(get_current_datetime().timestamp())
+
+def get_current_datetime():
+    return datetime.now(timezone.utc)
 
 
 def process_views(views):
@@ -63,7 +66,7 @@ class TelegramSpider(scrapy.Spider):
 
         assert "hours" in kwargs
         hours = int(kwargs.pop("hours"))
-        self.until_ts = int((datetime.now() - timedelta(hours=hours)).timestamp())
+        self.until_ts = int((get_current_datetime() - timedelta(hours=hours)).timestamp())
         print("Considering last {} hours".format(hours))
 
         self.html2text = html2text_setup()
@@ -153,7 +156,7 @@ class TelegramSpider(scrapy.Spider):
 
         item["text"] = self._parse_html(text_element.extract_first())
         item["links"] = text_element.css("a::attr(href)").getall()
-        item["fetch_time"] = int(datetime.now().replace(tzinfo=timezone.utc).timestamp())
+        item["fetch_time"] = get_current_ts()
 
         views_element = post_element.css(views_path)
         if not views_element:

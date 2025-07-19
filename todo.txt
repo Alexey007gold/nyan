@@ -1,0 +1,15 @@
+- update time zone to my europe
+- add my followed channels
+- remove 'ru' language specifics
+
+- can we improve efficiency by not processing already processed docs
+    - maybe it's already done when mongo is used and processed docs are stored there
+
+
+ISSUES
+- message is sent multiple times (for every identified 'issue')
+
+issue is identified from `channel.json` config file
+    also issue is added from detected category
+main issue is always assigned
+    so every message will go into main issue, but also can be added to some others based on detected category

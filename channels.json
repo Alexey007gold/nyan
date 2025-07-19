@@ -47,7 +47,7 @@
       "issue": "main"
     },
     {
-      "name": "breakingmash",
+      "name": "mash",
       "groups": {
         "main": "red",
         "tech": "other"
@@ -1495,6 +1495,60 @@
       "issue": "economy",
       "groups": {
         "economy": "economy"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "insiderukr",
+      "alias": "Інсайдер UA",
+      "issue": "main",
+      "groups": {
+        "main": "red"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "pravda_gerashchenko",
+      "alias": "Pravda Gerashchenko",
+      "issue": "main",
+      "groups": {
+        "main": "red"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "vremya_ua",
+      "alias": "ВРЕМЯ.UA",
+      "issue": "main",
+      "groups": {
+        "main": "red"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "tarasodessa",
+      "alias": "Тарас Юрист",
+      "issue": "main",
+      "groups": {
+        "main": "blue"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "dmytrukartem",
+      "alias": "Артем Дмитрук",
+      "issue": "main",
+      "groups": {
+        "main": "red"
+      },
+      "recrawl_time": 300
+    },
+    {
+      "name": "d_yelisevich",
+      "alias": "Денис Елисевич",
+      "issue": "main",
+      "groups": {
+        "main": "blue"
       },
       "recrawl_time": 300
     }

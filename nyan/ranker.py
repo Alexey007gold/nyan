@@ -113,7 +113,7 @@ class Ranker:
             if age > hta and views_per_hour >= border_views_per_hour:
                 filtered_clusters.append(cluster)
                 print("Added by views: {} {}".format(views_per_hour, cropped_title))
-            elif age < hta and views_per_hour >= higher_border_views_per_hour:
+            elif age <= hta and views_per_hour >= higher_border_views_per_hour:
                 cluster.is_important = True
                 filtered_clusters.append(cluster)
                 print(

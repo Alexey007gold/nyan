@@ -82,7 +82,7 @@ class Cluster:
 
     @property
     def age(self) -> int:
-        return self.fetch_time - self.pub_time_percentile
+        return max(self.fetch_time - self.pub_time_percentile, 1)
 
     @property
     def views_per_hour(self) -> int:

@@ -18,6 +18,7 @@ eggs/
 lib/
 lib64
 models/
+.data/
 parts/
 sdist/
 var/
