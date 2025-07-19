@@ -12,6 +12,7 @@ class Channel(Serializable):
     alias: str = ""
     master: Optional[str] = None
     disabled: bool = False
+    important: bool = False
     emojis: Optional[Dict[str, str]] = None
     colors: Optional[Dict[str, str]] = None
     issue: Optional[str] = None

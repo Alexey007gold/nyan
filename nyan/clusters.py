@@ -68,6 +68,10 @@ class Cluster:
         return sum([doc.views for doc in self.docs])
 
     @property
+    def important(self) -> bool:
+        return any(doc.important for doc in self.docs)
+
+    @property
     def debiased_views(self) -> int:
         views = [doc.views for doc in self.unique_docs]
         if len(views) <= 2:

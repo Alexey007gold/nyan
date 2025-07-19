@@ -1503,27 +1503,30 @@
       "alias": "Інсайдер UA",
       "issue": "main",
       "groups": {
-        "main": "red"
+        "main": "yellow"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     },
     {
       "name": "pravda_gerashchenko",
       "alias": "Pravda Gerashchenko",
       "issue": "main",
       "groups": {
-        "main": "red"
+        "main": "yellow"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     },
     {
       "name": "vremya_ua",
       "alias": "ВРЕМЯ.UA",
       "issue": "main",
       "groups": {
-        "main": "red"
+        "main": "yellow"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     },
     {
       "name": "tarasodessa",
@@ -1532,7 +1535,8 @@
       "groups": {
         "main": "blue"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     },
     {
       "name": "dmytrukartem",
@@ -1541,7 +1545,8 @@
       "groups": {
         "main": "red"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     },
     {
       "name": "d_yelisevich",
@@ -1550,11 +1555,13 @@
       "groups": {
         "main": "blue"
       },
-      "recrawl_time": 300
+      "recrawl_time": 300,
+      "important": true
     }
   ],
   "emojis": {
     "red": "🇷🇺",
+    "yellow": "🇺🇦",
     "blue": "🌎",
     "purple": "⚖️",
     "tech": "💻",
@@ -1565,6 +1572,7 @@
   },
   "colors": {
     "red": "🟥",
+    "yellow": "🟨",
     "blue": "🟦",
     "purple": "🟪",
     "tech": "⬛",

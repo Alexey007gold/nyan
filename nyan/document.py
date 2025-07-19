@@ -29,6 +29,7 @@ class Document(Serializable):
     forward_from: Optional[str] = None
 
     channel_title: str = ""
+    important: bool = False
     has_obscene: bool = False
     patched_text: Optional[str] = None
     groups: Dict[str, str] = field(default_factory=dict)

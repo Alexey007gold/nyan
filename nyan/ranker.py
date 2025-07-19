@@ -26,17 +26,22 @@ class Ranker:
 
             clusters = issues[issue_name]
             filtered_clusters = []
+            important_clusters = []
             for cluster in clusters:
                 unique_channels = {d.channel_id for d in cluster.docs}
                 is_big_cluster = len(unique_channels) >= min_channels
                 has_ru_doc = any(doc.language == "ru" for doc in cluster.docs)
                 is_fresh = cluster.age < max_age_minutes * 60
-                if is_big_cluster and has_ru_doc and is_fresh:
+                if cluster.important:
+                    important_clusters.append(cluster)
+                elif is_big_cluster and has_ru_doc and is_fresh:
                     filtered_clusters.append(cluster)
             clusters = filtered_clusters
 
             print()
             print(f"Issue: {issue_name}, clusters after first filter: {len(clusters)}")
+
+            final_clusters[issue_name].extend(important_clusters)
 
             if len(clusters) <= 3:
                 final_clusters[issue_name].extend(clusters)
@@ -48,6 +53,10 @@ class Ranker:
                     )
                 continue
 
+            add_count = 10 - len(important_clusters)
+            if add_count <= 0:
+                continue
+
             clusters = self.filter_by_views(
                 clusters,
                 issue_name,
@@ -56,8 +65,7 @@ class Ranker:
                 issue_config["higher_trigger_age_minutes"],
             )
             clusters.sort(key=lambda c: c.pub_time_percentile)
-            clusters = clusters[-10:]
-            final_clusters[issue_name].extend(clusters)
+            final_clusters[issue_name].extend(clusters[-add_count:])
         print()
         return final_clusters
 
