@@ -180,6 +180,8 @@ class Cluster:
         except Exception:
             traceback.print_exc()
             differences = []
+
+        self.saved_diff = differences
         return differences
 
     @property

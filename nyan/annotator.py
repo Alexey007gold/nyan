@@ -23,7 +23,7 @@ class Annotator:
 
         self.embedder = Embedder(**config["embedder"])
         self.text_processor = TextProcessor(config["text_processor"])
-        self.tokenizer = Tokenizer(**config.get("tokenizer", {}))
+        self.tokenizer = Tokenizer()
 
         self.image_processor = None
         if "image_processor" in config:

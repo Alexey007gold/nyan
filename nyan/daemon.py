@@ -5,7 +5,7 @@ from time import sleep
 from typing import Dict, Any, Optional, List, cast
 from typing import Counter as CounterT
 
-from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
+from sklearn.metrics.pairwise import cosine_similarity
 
 from nyan.annotator import Annotator
 from nyan.client import TelegramClient
