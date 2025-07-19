@@ -23,8 +23,8 @@ class Renderer:
         file_loader = FileSystemLoader(".")
         env = Environment(loader=file_loader)
         self.cluster_template = env.get_template(config["cluster_template"])
-        self.tz_offset = config["tz_offset"]
         self.tz_name = config["tz_name"]
+        self.tz = config["tz"]
 
     def render_cluster(self, cluster: Cluster, issue_name: str) -> str:
         groups = defaultdict(list)
@@ -52,7 +52,7 @@ class Renderer:
 
         sorted_groups = sorted(groups.items(), key=lambda x: x[0])
         first_doc = copy.deepcopy(cluster.first_doc)
-        first_doc.pub_time_dt = ts_to_dt(first_doc.pub_time, self.tz_offset)
+        first_doc.pub_time_dt = ts_to_dt(first_doc.pub_time, self.tz)
 
         external_link = None
         if cluster.external_links:

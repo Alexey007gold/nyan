@@ -1,5 +1,5 @@
-- update time zone to my europe
-- add my followed channels
++ update time zone to my europe
++ add my followed channels
 - remove 'ru' language specifics
 
 - can we improve efficiency by not processing already processed docs

@@ -1,12 +1,15 @@
-import os
 import json
+import math
+import os
 import random
-from typing import TypeVar, List, Any, Iterable, Dict, Type
-from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, asdict, fields
+from datetime import datetime
+from typing import TypeVar, List, Any, Iterable, Dict, Type
 
 import numpy as np
+import pytz
 import torch
+from pytz import timezone
 
 
 def read_jsonl(file_path: str, sample_rate: float = 1.0) -> Iterable[Dict[str, Any]]:
@@ -30,11 +33,24 @@ def get_current_ts() -> int:
     return int(get_current_datetime().timestamp())
 
 def get_current_datetime():
-    return datetime.now(timezone.utc)
+    return datetime.now(pytz.utc)
 
+def ts_to_dt(timestamp: int, tz: str = None) -> datetime:
+    if not tz:
+        tz = find_timezone_by_local_offset()
+    return datetime.fromtimestamp(timestamp, timezone(tz))
 
-def ts_to_dt(timestamp: int, offset: int = 3) -> datetime:
-    return datetime.fromtimestamp(timestamp, timezone(timedelta(hours=offset)))
+def find_timezone_by_local_offset() -> str:
+    local = datetime.now().replace(tzinfo=timezone("UTC"))
+    utc = datetime.now(timezone("UTC"))
+    offset_minutes = math.ceil((local - utc).seconds / 60)
+
+    for tzName in pytz.all_timezones:
+        if offset_minutes == datetime.now(timezone(tzName)).utcoffset().total_seconds()/60:
+            return tzName
+
+    return "UTC"
+
 
 
 T = TypeVar("T", bound="Serializable")
