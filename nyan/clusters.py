@@ -15,7 +15,7 @@ from nyan.client import MessageId
 from nyan.document import Document
 from nyan.mongo import get_clusters_collection
 from nyan.title import choose_title
-from nyan.openai import openai_completion
+from nyan.openai_client import openai_completion
 
 
 BASE_DIR = Path(os.path.dirname(os.path.abspath(__file__)))

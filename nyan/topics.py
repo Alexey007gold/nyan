@@ -7,7 +7,7 @@ from jinja2 import Template
 from nyan.clusters import Clusters
 from nyan.client import TelegramClient
 from nyan.util import get_current_ts, ts_to_dt
-from nyan.openai import openai_completion
+from nyan.openai_client import openai_completion
 from nyan.mongo import get_topics_collection
 
 

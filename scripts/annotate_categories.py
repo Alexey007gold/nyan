@@ -6,7 +6,7 @@ from jinja2 import Template
 from tqdm import tqdm
 
 from nyan.util import read_jsonl, gen_batch, write_jsonl
-from nyan.openai import openai_batch_completion
+from nyan.openai_client import openai_batch_completion
 
 
 def process_text(text, max_words: int = 100):

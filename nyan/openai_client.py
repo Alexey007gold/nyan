@@ -1,10 +1,12 @@
+import copy
 import logging
 from dataclasses import dataclass
-from typing import Optional, Sequence, List, Dict, Any, cast
 from multiprocessing.pool import ThreadPool
+from typing import Optional, Sequence, List, Dict, Any, cast
 
-import openai
-import copy
+from openai import OpenAI
+
+client = OpenAI()
 
 
 @dataclass
@@ -32,9 +34,8 @@ def openai_completion(
     assert decoding_args.n == 1
     while True:
         try:
-            completions = openai.ChatCompletion.create(  # type: ignore
-                messages=messages, model=model_name, **decoding_args.__dict__
-            )
+            completions = client.chat.completions.create(
+                messages=messages, model=model_name, **decoding_args.__dict__)
             break
         except Exception as e:
             logging.warning("OpenAI error: %s.", e)
