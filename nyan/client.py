@@ -153,7 +153,7 @@ class TelegramClient:
         bad_response = self.get_bad_response(response)
         if "Bad Request: there is no caption in the message to edit" == bad_response:
             response = self._edit_text(message_id, text, issue=issue)
-            print("Text only send status code:", response.status_code)
+            print("Text only update status code:", response.status_code)
 
         if response.status_code != 200:
             print("Update error:", response.text)

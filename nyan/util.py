@@ -8,6 +8,7 @@ from typing import TypeVar, List, Any, Iterable, Dict, Type
 
 import numpy as np
 import pytz
+import requests
 import torch
 from pytz import timezone
 
@@ -97,3 +98,10 @@ def gen_batch(records: List[Any], batch_size: int) -> Iterable[List[Any]]:
         batch = records[batch_start:batch_end]
         batch_start = batch_end
         yield batch
+
+def unique_by(items, key_func):
+    seen = set()
+    return [item for item in items if not (key := key_func(item)) in seen or seen.add(key)]
+
+def url_content_len(url: str) -> int:
+    return requests.head(url, allow_redirects=False).headers.get('content-length', 0)

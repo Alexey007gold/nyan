@@ -16,6 +16,7 @@ from nyan.document import Document
 from nyan.mongo import get_clusters_collection
 from nyan.openai_client import openai_completion
 from nyan.title import choose_title
+from nyan.util import unique_by, url_content_len
 
 BASE_DIR = Path(os.path.dirname(os.path.abspath(__file__)))
 T = TypeVar("T")
@@ -116,16 +117,19 @@ class Cluster:
         if not images:
             return tuple()
         if image_doc_count / doc_count >= 0.4 or image_doc_count >= 3:
-            return list(images)
+            return unique_by(images, key_func=lambda x: url_content_len(x))
         return tuple()
 
     @cached_property
     def videos(self) -> Sequence[str]:
+
         videos = set(self.annotation_doc.videos)
         for doc in self.docs:
             videos.update(doc.videos)
         if videos:
-            return [vid for vid in list(videos) if ".mp4" in vid]
+            mp4 = [vid for vid in list(videos) if ".mp4" in vid]
+            return unique_by(mp4, key_func=lambda x: url_content_len(x))
+
         return tuple()
 
     @cached_property
