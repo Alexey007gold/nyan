@@ -1,19 +1,17 @@
-import os
 import json
+import os
 from collections import Counter
 from time import sleep
-from typing import Dict, Any, Optional, List, cast
 from typing import Counter as CounterT
+from typing import Dict, Any, Optional, List, cast
 
 from sklearn.metrics.pairwise import cosine_similarity
 
 from nyan.annotator import Annotator
-from nyan.client import TelegramClient
-from nyan.clusters import Clusters, Cluster
-from nyan.clusterer import Clusterer
 from nyan.channels import Channels
-from nyan.ranker import Ranker
-from nyan.renderer import Renderer
+from nyan.client import TelegramClient
+from nyan.clusterer import Clusterer
+from nyan.clusters import Clusters, Cluster
 from nyan.document import (
     read_documents_file,
     read_documents_mongo,
@@ -21,6 +19,8 @@ from nyan.document import (
     read_annotated_documents_mongo,
     write_annotated_documents_mongo,
 )
+from nyan.ranker import Ranker
+from nyan.renderer import Renderer
 from nyan.util import get_current_ts, ts_to_dt
 
 
@@ -237,6 +237,7 @@ class Daemon:
             current_ts = get_current_ts()
             time_diff = abs(current_ts - posted_cluster.pub_time_percentile)
             if time_diff < max_time_updated and posted_cluster.changed():
+                posted_cluster.saved_diff = None
                 cluster_text = self.renderer.render_cluster(posted_cluster, issue_name)
                 print(
                     "Update message {} at {}: {}".format(
