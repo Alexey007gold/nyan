@@ -1,15 +1,14 @@
 from typing import TypeVar, Callable, Dict, List, Any, cast
 
 import numpy as np
-from numpy.typing import NDArray
 import requests
 import torch
-from transformers import CLIPProcessor, CLIPModel  # type: ignore
-from tqdm.auto import tqdm
 from PIL import Image
+from numpy.typing import NDArray
+from tqdm.auto import tqdm
+from transformers import CLIPProcessor, CLIPModel  # type: ignore
 
 from nyan.util import gen_batch
-
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DEFAULT_CLIP_PATH = "openai/clip-vit-base-patch32"
@@ -28,7 +27,7 @@ class ClipEmbedder:
     ):
         self.model_name = model_name
         self.model = CLIPModel.from_pretrained(model_name).to(device)
-        self.processor = CLIPProcessor.from_pretrained(model_name)
+        self.processor = CLIPProcessor.from_pretrained(model_name, use_fast=True)
         self.image_batch_size = image_batch_size
         self.text_batch_size = text_batch_size
         self.normalize = normalize
