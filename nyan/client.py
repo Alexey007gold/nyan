@@ -90,7 +90,7 @@ class TelegramClient:
             if description == "Bad Request: too many messages to send as an album":
                 response = self.try_send_less(text, issue, photos, animations, videos, reply_to, parse_mode)
                 print("Media count:", len(photos) + len(videos))
-                print("Text only send status code:", response.status_code)
+                print("Send less media status code:", response.status_code)
 
         print("Send status code:", response.status_code)
         if response.status_code == 400 and "description" in response.text:
@@ -374,6 +374,7 @@ class TelegramClient:
                      }
                      for i, video in enumerate(videos))
         media[0]["caption"] = text
+        media = media[0:10]
         params = {
             "chat_id": issue.channel_id,
             "disable_notification": True,
