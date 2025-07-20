@@ -67,36 +67,30 @@ class TelegramClient:
             self.update_discussion_mapping(issue_name)
 
     def send_message(
-        self,
-        text: str,
-        issue_name: str,
-        photos: Sequence[str] = tuple(),
-        animations: Sequence[str] = tuple(),
-        videos: Sequence[str] = tuple(),
-        reply_to: Optional[int] = None,
-        parse_mode: str = "html",
+            self,
+            text: str,
+            issue_name: str,
+            photos: Sequence[str] = tuple(),
+            animations: Sequence[str] = tuple(),
+            videos: Sequence[str] = tuple(),
+            reply_to: Optional[int] = None,
+            parse_mode: str = "html",
     ) -> Optional[MessageId]:
         if issue_name not in self.issues:
             print(ISSUE_WARNING.format(issue_name=issue_name))
             return None
         issue = self.issues[issue_name]
-        response = None
-        if len(photos) or len(videos):
-            response = self._send_with_media(
-                text, photos, videos, issue=issue, reply_to=reply_to, parse_mode=parse_mode
-            )
-        elif len(animations) >= 1:
-            response = self._send_animation(
-                text,
-                animations[0],
-                issue=issue,
-                reply_to=reply_to,
-                parse_mode=parse_mode,
-            )
-        else:
-            response = self._send_text(
-                text, issue=issue, reply_to=reply_to, parse_mode=parse_mode
-            )
+
+        response = self.try_send_all(text, issue, photos, animations, videos, reply_to, parse_mode)
+
+        print("Send status code:", response.status_code)
+        if response.status_code == 400 and "description" in response.text:
+            response_dict = response.json()
+            description = response_dict["description"]
+            if description == "Bad Request: too many messages to send as an album":
+                response = self.try_send_less(text, issue, photos, animations, videos, reply_to, parse_mode)
+                print("Media count:", len(photos) + len(videos))
+                print("Text only send status code:", response.status_code)
 
         print("Send status code:", response.status_code)
         if response.status_code == 400 and "description" in response.text:
@@ -115,6 +109,50 @@ class TelegramClient:
             result["message_id"] if "message_id" in result else result[0]["message_id"]
         )
         return MessageId(message_id=message_id, issue=issue_name, from_discussion=False)
+
+    def try_send_all(self, text, issue, photos, animations, videos, reply_to, parse_mode):
+        if len(photos) or len(videos):
+            return self._send_with_media(
+                text, photos, videos, issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
+        elif len(animations) >= 1:
+            return self._send_animation(
+                text,
+                animations[0],
+                issue=issue,
+                reply_to=reply_to,
+                parse_mode=parse_mode,
+            )
+        else:
+            return self._send_text(
+                text, issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
+
+    def try_send_less(self, text, issue, photos, animations, videos, reply_to, parse_mode):
+        if len(photos) == 1:
+            return self._send_photo(
+                text, photos[0], issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
+        elif len(photos) > 1:
+            return self._send_photos(
+                text, photos, issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
+        elif len(animations) >= 1:
+            return self._send_animation(
+                text,
+                animations[0],
+                issue=issue,
+                reply_to=reply_to,
+                parse_mode=parse_mode,
+            )
+        elif len(videos) >= 1:
+            return self._send_video(
+                text, videos[0], issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
+        else:
+            return self._send_text(
+                text, issue=issue, reply_to=reply_to, parse_mode=parse_mode
+            )
 
     def send_poll(
         self,
@@ -234,6 +272,34 @@ class TelegramClient:
             "photo": photo,
             "parse_mode": parse_mode,
             "disable_notification": True,
+        }
+        if reply_to:
+            params["reply_to_message_id"] = reply_to
+            params["allow_sending_without_reply"] = True
+        return self._post(url_template.format(issue.bot_token), params)
+
+    def _send_photos(
+            self,
+            text: str,
+            photos: Sequence[str],
+            issue: IssueConfig,
+            reply_to: Optional[int] = None,
+            parse_mode: str = "html",
+    ) -> Response:
+        url_template = self.host + "/bot{}/sendMediaGroup"
+        media = [
+            {
+                "type": "photo",
+                "media": photo,
+                "caption": text if i == 0 else "",
+                "parse_mode": parse_mode,
+            }
+            for i, photo in enumerate(photos)
+        ]
+        params = {
+            "chat_id": issue.channel_id,
+            "disable_notification": True,
+            "media": json.dumps(media),
         }
         if reply_to:
             params["reply_to_message_id"] = reply_to
