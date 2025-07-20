@@ -86,13 +86,10 @@ class TelegramClient:
 
         print("Send status code:", response.status_code)
         forced_no_media = False
-        if response.status_code == 400 and "description" in response.text:
-            response_dict = response.json()
-            description = response_dict["description"]
-            if description == "Bad Request: message caption is too long":
-                response = self._send_text(text, issue=issue)
-                forced_no_media = True
-                print("Text only send status code:", response.status_code)
+        if "Bad Request: message caption is too long" == self.get_bad_response(response):
+            response = self._send_text(text, issue=issue)
+            forced_no_media = True
+            print("Text only send status code:", response.status_code)
 
         if response.status_code != 200:
             print("Send error:", response.text)
@@ -149,13 +146,21 @@ class TelegramClient:
         message_id = message.message_id
         if is_caption:
             response = self._edit_caption(message_id, text, issue=issue)
-
-        if not is_caption or response.status_code != 200:
+        else:
             response = self._edit_text(message_id, text, issue=issue)
 
         print("Update status code:", response.status_code)
+        if "Bad Request: message caption is too long" == self.get_bad_response(response):
+            response = self._send_text(text, issue=issue)
+            print("Text only send status code:", response.status_code)
+
         if response.status_code != 200:
             print("Update error:", response.text)
+
+    def get_bad_response(self, response) -> str | None:
+        if response.status_code == 400 and "description" in response.text:
+            response_dict = response.json()
+            return response_dict["description"]
 
     def update_discussion_mapping(self, issue_name: str) -> None:
         if issue_name not in self.issues:
