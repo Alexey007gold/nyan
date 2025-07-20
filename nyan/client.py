@@ -85,6 +85,7 @@ class TelegramClient:
         response = self.try_send_all(text, issue, photos, animations, videos, reply_to, parse_mode)
 
         print("Send status code:", response.status_code)
+        forced_no_media = False
         if response.status_code == 400 and "description" in response.text:
             response_dict = response.json()
             description = response_dict["description"]
