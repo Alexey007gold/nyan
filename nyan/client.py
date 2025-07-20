@@ -143,10 +143,12 @@ class TelegramClient:
         assert not message.from_discussion
         issue = self.issues[message.issue]
         message_id = message.message_id
-        if not is_caption:
-            response = self._edit_text(message_id, text, issue=issue)
-        else:
+        if is_caption:
             response = self._edit_caption(message_id, text, issue=issue)
+
+        if not is_caption or response.status_code != 200:
+            response = self._edit_text(message_id, text, issue=issue)
+
         print("Update status code:", response.status_code)
         if response.status_code != 200:
             print("Update error:", response.text)
