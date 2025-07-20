@@ -125,7 +125,7 @@ class Cluster:
         for doc in self.docs:
             videos.update(doc.videos)
         if videos:
-            return [vid for vid in list(videos) if ".mov" not in vid]
+            return [vid for vid in list(videos) if ".mp4" in vid]
         return tuple()
 
     @cached_property

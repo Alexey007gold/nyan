@@ -27,7 +27,7 @@ class ClipEmbedder:
     ):
         self.model_name = model_name
         self.model = CLIPModel.from_pretrained(model_name).to(device)
-        self.processor = CLIPProcessor.from_pretrained(model_name, use_fast=True)
+        self.processor = CLIPProcessor.from_pretrained(model_name)
         self.image_batch_size = image_batch_size
         self.text_batch_size = text_batch_size
         self.normalize = normalize
