@@ -23,7 +23,8 @@ class IssueConfig:
 class MessageId(Serializable):
     message_id: int
     issue: str = "main"
-    from_discussion: bool = False
+    from_discussion: bool = False,
+    forced_no_media: bool = False
 
     def as_tuple(self) -> Tuple[str, int]:
         return (self.issue, self.message_id)
@@ -89,6 +90,7 @@ class TelegramClient:
             description = response_dict["description"]
             if description == "Bad Request: message caption is too long":
                 response = self._send_text(text, issue=issue)
+                forced_no_media = True
                 print("Text only send status code:", response.status_code)
 
         if response.status_code != 200:
@@ -99,7 +101,8 @@ class TelegramClient:
         message_id = int(
             result["message_id"] if "message_id" in result else result[0]["message_id"]
         )
-        return MessageId(message_id=message_id, issue=issue_name, from_discussion=False)
+        return MessageId(message_id=message_id, issue=issue_name,
+                         from_discussion=False, forced_no_media=forced_no_media)
 
     def try_send_all(self, text, issue, photos, animations, videos, reply_to, parse_mode):
         if len(photos) or len(videos):

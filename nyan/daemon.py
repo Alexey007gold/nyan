@@ -246,7 +246,8 @@ class Daemon:
                 )
                 print("Discussion message id: {}".format(discussion_message.message_id))
 
-                is_caption = bool(posted_cluster.images) or bool(posted_cluster.videos)
+                is_caption = ((bool(posted_cluster.images) or bool(posted_cluster.videos))
+                              and not message.forced_no_media)
                 self.client.update_message(message, cluster_text, is_caption)
 
             return
