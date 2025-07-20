@@ -108,20 +108,24 @@ class Cluster:
         doc_count = len(self.unique_docs)
         if doc_count == 0:
             return tuple()
-        images = [
+        images = set([
             i["url"] for i in self.annotation_doc.embedded_images if self.annotation_doc
-        ]
+        ])
+        for doc in self.docs:
+            images.update(i["url"] for i in doc.embedded_images)
         if not images:
             return tuple()
         if image_doc_count / doc_count >= 0.4 or image_doc_count >= 3:
-            return images
+            return list(images)
         return tuple()
 
     @cached_property
     def videos(self) -> Sequence[str]:
-        videos = self.annotation_doc.videos
+        videos = set(self.annotation_doc.videos)
+        for doc in self.docs:
+            videos.update(doc.videos)
         if videos:
-            return videos
+            return list(videos)
         return tuple()
 
     @cached_property

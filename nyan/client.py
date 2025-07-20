@@ -1,12 +1,11 @@
-import os
 import json
-from typing import Tuple, Optional, Any, Dict, List, Sequence
+import os
 from dataclasses import dataclass
+from typing import Tuple, Optional, Any, Dict, List, Sequence
 
 from httpx import Timeout, Limits, HTTPTransport, Client, Response
 
 from nyan.util import Serializable
-
 
 ISSUE_WARNING = "Warning: Missing issue '{issue_name}' in the client config."
 
@@ -82,13 +81,9 @@ class TelegramClient:
             return None
         issue = self.issues[issue_name]
         response = None
-        if len(photos) == 1:
-            response = self._send_photo(
-                text, photos[0], issue=issue, reply_to=reply_to, parse_mode=parse_mode
-            )
-        elif len(photos) > 1:
-            response = self._send_photos(
-                text, photos, issue=issue, reply_to=reply_to, parse_mode=parse_mode
+        if len(photos) or len(videos):
+            response = self._send_with_media(
+                text, photos, videos, issue=issue, reply_to=reply_to, parse_mode=parse_mode
             )
         elif len(animations) >= 1:
             response = self._send_animation(
@@ -97,10 +92,6 @@ class TelegramClient:
                 issue=issue,
                 reply_to=reply_to,
                 parse_mode=parse_mode,
-            )
-        elif len(videos) >= 1:
-            response = self._send_video(
-                text, videos[0], issue=issue, reply_to=reply_to, parse_mode=parse_mode
             )
         else:
             response = self._send_text(
@@ -171,7 +162,8 @@ class TelegramClient:
             message = update["message"]
             if "forward_from_chat" not in message:
                 continue
-            if issue.channel_id != message["forward_from_chat"]["id"]:
+            if (issue.channel_id != message["forward_from_chat"]["id"] and
+                    message["forward_from_chat"]["username"] != issue.channel_id[1:]):
                 continue
             if issue.discussion_id != message["chat"]["id"]:
                 continue
@@ -290,24 +282,32 @@ class TelegramClient:
             params["allow_sending_without_reply"] = True
         return self._post(url_template.format(issue.bot_token), params)
 
-    def _send_photos(
+    def _send_with_media(
         self,
         text: str,
         photos: Sequence[str],
+        videos: Sequence[str],
         issue: IssueConfig,
         reply_to: Optional[int] = None,
         parse_mode: str = "html",
     ) -> Response:
         url_template = self.host + "/bot{}/sendMediaGroup"
-        media = [
-            {
-                "type": "photo",
-                "media": photo,
-                "caption": text if i == 0 else "",
-                "parse_mode": parse_mode,
-            }
-            for i, photo in enumerate(photos)
-        ]
+        media = []
+        media.extend({
+                         "type": "photo",
+                         "media": photo,
+                         "caption": "",
+                         "parse_mode": parse_mode,
+                     }
+                     for i, photo in enumerate(photos))
+        media.extend({
+                         "type": "video",
+                         "media": video,
+                         "caption": "",
+                         "parse_mode": parse_mode,
+                     }
+                     for i, video in enumerate(videos))
+        media[0]["caption"] = text
         params = {
             "chat_id": issue.channel_id,
             "disable_notification": True,
