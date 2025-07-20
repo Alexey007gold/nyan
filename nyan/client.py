@@ -171,7 +171,8 @@ class TelegramClient:
             message = update["message"]
             if "forward_from_chat" not in message:
                 continue
-            if issue.channel_id != message["forward_from_chat"]["id"]:
+            if (issue.channel_id != message["forward_from_chat"]["id"] and
+                    issue.channel_id[1:] != message["forward_from_chat"]["username"]):
                 continue
             if issue.discussion_id != message["chat"]["id"]:
                 continue

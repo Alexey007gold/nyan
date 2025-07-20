@@ -24,7 +24,7 @@ class Embedder:
         set_random_seed(56154)
         self.model_name = model_name
         self.model = AutoModel.from_pretrained(model_name).to(device)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
         self.device = device
         self.batch_size = batch_size
         self.max_length = max_length

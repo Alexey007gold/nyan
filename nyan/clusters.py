@@ -152,6 +152,8 @@ class Cluster:
     def diff(self) -> List[Dict[str, Any]]:
         if self.saved_diff is not None:
             return self.saved_diff
+        if len(self.docs) <= 1:
+            return []
 
         prompt_path: Path = BASE_DIR / "prompts/diff.txt"
         with open(prompt_path) as f:

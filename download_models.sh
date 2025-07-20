@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 mkdir -p models
 wget https://github.com/NyanNyanovich/nyan/releases/download/v0.3/nyan_models.tar.gz -O models/nyan_models.tar.gz
