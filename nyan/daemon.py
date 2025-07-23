@@ -215,7 +215,6 @@ class Daemon:
         posted_cluster = posted_clusters.find_similar(
             cluster,
             issue_name,
-            min_size_ratio=self.config["similar_min_size_ratio"],
             min_intersection_ratio=self.config["similar_min_intersection_ratio"],
         )
         if posted_cluster:

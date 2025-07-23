@@ -340,7 +340,6 @@ class Clusters:
         self,
         cluster: Cluster,
         issue_name: str,
-        min_size_ratio: float = 0.25,
         min_intersection_ratio: float = 0.25,
     ) -> Optional[Cluster]:
         messages = list()
@@ -359,13 +358,9 @@ class Clusters:
 
         new_cluster_size = len(cluster.urls)
         old_cluster_size = len(old_cluster.urls)
-        intersection_ratio = intersection_count / new_cluster_size
-        intersection_ratio = min(
-            intersection_ratio, intersection_count / old_cluster_size
-        )
-        size_ratio = new_cluster_size / old_cluster_size
+        intersection_ratio = intersection_count / min(old_cluster_size, new_cluster_size)
 
-        if size_ratio < min_size_ratio or intersection_ratio < min_intersection_ratio:
+        if intersection_ratio < min_intersection_ratio:
             return None
         return old_cluster
 
