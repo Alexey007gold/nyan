@@ -12,11 +12,18 @@ services:
 
   nyan-send:
     build: .
+    volumes:
+      - nyan_data:/usr/src/app/.data
     depends_on:
       - mongodb
     restart: always
     environment:
       - OPENAI_API_KEY
+      - HF_HOME=/usr/src/app/.data/hf
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
     command: bash send_container.sh
 
   nyan-crawl:
