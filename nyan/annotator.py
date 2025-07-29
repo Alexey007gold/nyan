@@ -6,12 +6,12 @@ from urllib.parse import unquote, urlparse
 from tqdm import tqdm
 
 from nyan.channels import Channels
-from nyan.document import Document
-from nyan.fasttext_clf import FasttextClassifier
+# from nyan.fasttext_clf import FasttextClassifier
 from nyan.classifier import ClassifierHead
+from nyan.document import Document
 from nyan.embedder import Embedder
-from nyan.text import TextProcessor
 from nyan.image import ImageProcessor
+from nyan.text import TextProcessor
 from nyan.tokenizer import Tokenizer
 
 
@@ -30,8 +30,8 @@ class Annotator:
             self.image_processor = ImageProcessor(config["image_processor"])
 
         self.lang_detector = None
-        if "lang_detector" in config:
-            self.lang_detector = FasttextClassifier(config["lang_detector"])
+        # if "lang_detector" in config:
+        #     self.lang_detector = FasttextClassifier(config["lang_detector"])
 
         self.cat_detector = None
         if "cat_detector" in config:
@@ -133,6 +133,7 @@ class Annotator:
         return ready_docs
 
     def predict_language(self, doc: Document) -> Document:
+        doc.language = "ru"
         if not self.lang_detector:
             return doc
         if not doc.patched_text:
