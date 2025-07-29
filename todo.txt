@@ -5,10 +5,8 @@
 - can we improve efficiency by not processing already processed docs
     - maybe it's already done when mongo is used and processed docs are stored there
 
-- check why images are not posted for clusters with several docs
++ check why images are not posted for clusters with several docs
     check 400 response for caption length
-    Китай начал строить в Тибете крупнейшую
-    Добрые дроны» помешали
 
 
 ISSUES

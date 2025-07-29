@@ -56,6 +56,7 @@ class Daemon:
     ) -> None:
         while True:
             self.__call__(input_path, mongo_config_path, posted_clusters_path)
+            sleep(30)
 
     def __call__(
         self,
